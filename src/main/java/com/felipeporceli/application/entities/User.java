@@ -4,6 +4,7 @@ the database. */
 
 package com.felipeporceli.application.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,6 +27,12 @@ public class User implements Serializable {
     /* EN:US Mapping a "one-to-many" relationship with the "Order" entity, since one customer can place multiple orders. For this,
     the @OneToMany annotation is used. The "orders" attribute needs to be a list, as it can return multiple values.*/
     @OneToMany(mappedBy = "client")
+    /* PT:BR A anotação @JsonIgnore é usada para marcar um campo ou metodo que deve ser ignorado durante a serialização e
+    desserialização para/de JSON. É interessante utilizarmos ela no lado "OneToMany" para que não tenha um loop no retorno
+    JSON. */
+    /* EN:US The @JsonIgnore annotation is used to mark a field or method that should be ignored during serialization and
+    deserialization to/from JSON. It's useful to use it on the "OneToMany" side to prevent a loop in the JSON response.*/
+    @JsonIgnore
     private List<Order> orders = new ArrayList<>();
 
     public User () {

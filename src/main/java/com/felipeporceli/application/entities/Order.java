@@ -1,5 +1,7 @@
 package com.felipeporceli.application.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.felipeporceli.application.entities.enums.OrderStatus;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -13,9 +15,11 @@ import java.util.Objects;
 public class Order implements Serializable {
     private static final Long serialVersionUID = 1L;
 
+    // Order Atributes
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer id;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     private Instant moment;
 
     /* PT:BR Mapeando relacionamento "vários para um" com a entidade "User", pois o pedido só pode estar atrelado a um usuário.
@@ -28,15 +32,18 @@ public class Order implements Serializable {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private User client;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     public Order() {
 
     }
 
-    public Order(Integer id, Instant moment, User client) {
+    public Order(Integer id, Instant moment, User client, OrderStatus orderStatus) {
         this.id = id;
         this.moment = moment;
         this.client = client;
+        this.orderStatus = orderStatus;
     }
 
     public Integer getId() {
@@ -61,6 +68,14 @@ public class Order implements Serializable {
 
     public void setClient(User client) {
         this.client = client;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     @Override
