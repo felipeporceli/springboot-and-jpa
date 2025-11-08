@@ -2,7 +2,9 @@ package com.felipeporceli.application.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -14,6 +16,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    /* Here, we are saying that our ManyToMany logic is based on the "categories" set belonging to the "Product" entity. */
+    @ManyToMany (mappedBy = "categories")
+    private Set<Product> products = new HashSet<>();
 
     public Category () {
 
@@ -40,6 +45,10 @@ public class Category {
         this.name = name;
     }
 
+    public Set<Product> getProducts() {
+        return products;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -51,4 +60,6 @@ public class Category {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+
 }
