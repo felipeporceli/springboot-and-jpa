@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/* PT-BR: Define que esta classe é um controlador REST, responsável por tratar requisições HTTP no caminho "/categories".
+   EN-US: Defines this class as a REST controller, responsible for handling HTTP requests at "/categories". */
+
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
@@ -20,16 +23,20 @@ public class CategoryController {
     @Autowired
     private CategoryService service;
 
+    /* PT:BR Metodo para consultar todas as categorias
+       EN:US Method for querying all categories */
     @GetMapping
     public ResponseEntity<List<Category>> findAll() {
-        List<Category> Categorys = service.findAllCategorys();
-        return ResponseEntity.ok().body(Categorys);
+        List<Category> categories = service.findAllCategorys();
+        return ResponseEntity.ok().body(categories);
     }
 
-    @GetMapping (value = "/{id}")
+    /* PT:BR Metodo para consultar as categorias por id
+       EN:US Method for querying categories by ID. */
+    @GetMapping(value = "/{id}")
     public ResponseEntity<Category> findCategoryById(@PathVariable Integer id) {
         Category obj = service.findCategoryById(id);
         return ResponseEntity.ok().body(obj);
     }
-
 }
+

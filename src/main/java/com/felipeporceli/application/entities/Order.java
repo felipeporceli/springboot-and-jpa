@@ -1,14 +1,19 @@
 package com.felipeporceli.application.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.felipeporceli.application.entities.enums.OrderStatus;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_orders")
@@ -34,6 +39,12 @@ public class Order implements Serializable {
     private User client;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
+    @OneToMany(mappedBy = "id.order")
+    private Set<OrderItem> items = new HashSet<>();
+    @OneToOne(mappedBy = "order",
+            cascade = CascadeType.ALL)
+    private Payment payment;
 
     public Order() {
 
@@ -76,6 +87,26 @@ public class Order implements Serializable {
 
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public Set<OrderItem> getItems() {
+        return items;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public Double getTotal () {
+        double sum = 0.0;
+        for (OrderItem x : items) {
+            sum += x.getSubTotal();
+        }
+        return sum;
     }
 
     @Override

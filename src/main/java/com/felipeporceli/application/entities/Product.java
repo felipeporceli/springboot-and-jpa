@@ -1,5 +1,7 @@
 package com.felipeporceli.application.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -30,15 +32,20 @@ public class Product {
 
    This extra table is called a Join Table
    or associative table */
+    @JsonManagedReference
     @ManyToMany
     @JoinTable(name = "tb_product_category",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
+
     /* Here we are saying, "Spring, this dataset has a Many-to-Many relationship with another Many-to-Many entity, therefore,
     create a JoinTable called "tb_product_category" where the foreign key of the owning class of the relationship will be
     called "product_id", and the foreign key of the other class will be called "category_id". */
 
     private Set<Category> categories = new HashSet<>();
+
+    @OneToMany(mappedBy = "id.product")
+    private Set<OrderItem> items = new HashSet<>();
 
     public Product() {
 
@@ -94,6 +101,15 @@ public class Product {
 
     public Set<Category> getCategories() {
         return categories;
+    }
+
+    @JsonIgnore
+    public Set<Order> getOrders() {
+        Set<Order> set = new HashSet<>();
+        for (OrderItem x : items) {
+           set.add(x.getOrder());
+        }
+        return set;
     }
 
     @Override
