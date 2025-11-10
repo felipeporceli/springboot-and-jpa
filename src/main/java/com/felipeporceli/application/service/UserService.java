@@ -1,9 +1,12 @@
 package com.felipeporceli.application.service;
 
 import com.felipeporceli.application.entities.User;
+import com.felipeporceli.application.entities.exceptions.DatabaseException;
 import com.felipeporceli.application.entities.exceptions.ResourceNotFoundException;
 import com.felipeporceli.application.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +37,13 @@ public class UserService {
 
     /* PT:BR Metodo para deletar um usuário por id no corpo do caminho da URL */
     public void deleteUser (Long id) {
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     /* PT:BR Metodo para atualizar um usuário por id no corpo do caminho da URL e parâmetros no corpo da requisição */
