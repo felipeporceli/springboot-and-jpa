@@ -1,6 +1,7 @@
 package com.felipeporceli.application.service;
 
 import com.felipeporceli.application.entities.User;
+import com.felipeporceli.application.entities.exceptions.ResourceNotFoundException;
 import com.felipeporceli.application.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class UserService {
     /* EN:US Method to query user by id */
     public User findUserById (Long id) {
         Optional<User> user = repository.findById(id);
-        return user.get();
+        return  user.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     /* PT:BR Metodo para inserir usuário passando os parâmetros no corpo de requisicao */
